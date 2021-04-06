@@ -1,4 +1,5 @@
 body {
+  height: 100%;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -8,6 +9,20 @@ a {
 }
 
 #map {
- height: 400px;
+ height: 900px;
  width: 100%;
+}
+
+.array-buttons{
+  position: relative;
+  float: right;
+  top:-50px;
+}
+
+.round{
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  margin-left: 20px;
+  margin-right: 20px;
 }

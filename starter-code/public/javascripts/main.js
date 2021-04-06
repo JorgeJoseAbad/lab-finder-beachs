@@ -76,6 +76,7 @@ function onPlaceChanged() {
                 title: 'Destination!'
               });
         markers.push(marker);
+        debugger;
 
         //search();
       } else {
