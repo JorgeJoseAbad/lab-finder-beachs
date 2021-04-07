@@ -14,6 +14,8 @@ mongoose.connect('mongodb://localhost:27017/lab-beach-finder',{
    useUnifiedTopology: true
 });
 
+mongoose.Promise = global.Promise;
+
 const app = express();
 
 // view engine setup

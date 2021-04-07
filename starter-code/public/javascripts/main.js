@@ -51,11 +51,17 @@ places = new google.maps.places.PlacesService(map);
 document.getElementById("myBtn").addEventListener("click", onPlaceChanged);
 //startMap();
 
+function viewFlags(){
+  document.getElementById('array-buttons').style.visibility = 'visible';
+}
 
 function onPlaceChanged() {
 
+      viewFlags()
+
       var place = autocomplete.getPlace();
       var marker;
+      var flagColor;
       let markerPlace ={
         lat: 0,
         lng:0
@@ -67,21 +73,63 @@ function onPlaceChanged() {
         console.log(place.geometry.location.lng(map));
         map.panTo(place.geometry.location);
         map.setZoom(15);
-        markerPlace.lat=place.geometry.location.lat(map);
-        markerPlace.lng=place.geometry.location.lng(map);
+        markerPlace.lat = place.geometry.location.lat(map);
+        markerPlace.lng = place.geometry.location.lng(map);
 
-        marker= new google.maps.Marker({
-                position: markerPlace,
-                map: map,
-                title: 'Destination!'
-              });
-        markers.push(marker);
-        debugger;
+        document.getElementById("red").addEventListener("click", onPlaceMarker);
+        document.getElementById("yellow").addEventListener("click", onPlaceMarker);
+        document.getElementById("green").addEventListener("click", onPlaceMarker);
 
+        function onPlaceMarker(){
+
+          flagColor = this.id; //en id está el color elegido
+
+          const flagSVG = {
+            path : "M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z",
+            fillColor: flagColor,
+            fillOpacity: 0.6,
+            scale: 3,
+            anchor: new google.maps.Point(8, 24)
+          }
+
+          const image = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+          const image2 = "https://maps.google.com/mapfiles/kml/shapes/flag.png";
+
+          marker = new google.maps.Marker({
+                  position: markerPlace,
+                  map: map,
+                  label: {
+                    text: "Playa",
+                    color: flagColor,
+                    fontSize: '18px'
+                  },
+                  icon: flagSVG,
+                  title: 'Destination!'
+                });
+          markers.push(marker);
+
+          const thatBeach = {
+            name: place.name,
+            flag: flagColor
+          }
+
+          //send thatBeach to route mongoose, bbdd
+          $.ajax({
+            type: "POST",
+            url: '/new',
+            data: thatBeach,
+            success: function() {
+              console.log("enviado", this)
+            },
+          })
+
+        }
         //search();
       } else {
         document.getElementById('autocomplete').placeholder = 'Enter a city';
       }
+
+
     }
 
 }
