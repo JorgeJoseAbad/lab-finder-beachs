@@ -164,7 +164,7 @@ function onPlaceChanged() {
           url: '/new',
           data: thatBeach,
           success: function() {
-            console.log("enviado", this)
+            console.log("Sended new beach, OK: ", this)
           },
         })
 
