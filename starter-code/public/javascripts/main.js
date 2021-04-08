@@ -44,10 +44,9 @@ autocomplete = new google.maps.places.Autocomplete(
 
 places = new google.maps.places.PlacesService(map);
 
-//autocomplete.addListener('place_changed', onPlaceChanged);
-//document.addListener('click',onPlaceChanged);
+
 document.getElementById("myBtn").addEventListener("click", onPlaceChanged);
-//startMap();
+
 
 function viewFlags(){
   document.getElementById('array-buttons').style.visibility = 'visible';
@@ -66,7 +65,8 @@ function originalMarker(placeName,markerPlace){
     data: beachName,
     success: function(data, status, headers, config) {
       if (data != null && data !== '') {
-        let flagColor = data;
+        const flagColor = data.flag;
+        const beachDate = data.date;
         const flagSVG = {
           path : "M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z",
           fillColor: flagColor,
@@ -79,8 +79,8 @@ function originalMarker(placeName,markerPlace){
                 position: markerPlace,
                 map: map,
                 label: {
-                  text: "Finded!",
-                  color: flagColor,
+                  text: "Last visit: "+beachDate.toString(),
+                  color: 'navy',
                   fontSize: '18px'
                 },
                 icon: flagSVG,
@@ -125,6 +125,8 @@ function onPlaceChanged() {
 
       function onPlaceMarker(){
 
+        deleteMarkers(); //nuevo
+
         flagColor = this.id; //en id está el color elegido
 
         const flagSVG = {
@@ -142,7 +144,7 @@ function onPlaceChanged() {
                 position: markerPlace,
                 map: map,
                 label: {
-                  text: "Finded!!",
+                  text: "Modified now "+new Date(),
                   color: flagColor,
                   fontSize: '18px'
                 },
