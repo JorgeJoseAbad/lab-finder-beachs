@@ -13,6 +13,4 @@ const beachSchema = new Schema({
   }
 });
 
-//beachSchema.set('timestamps', true);
-
 module.exports = mongoose.model('Beach', beachSchema);
