@@ -57,6 +57,7 @@ function viewFlags(){
 
 function onPlaceChanged() {
 
+
       viewFlags()
 
       var place = autocomplete.getPlace();
@@ -67,70 +68,118 @@ function onPlaceChanged() {
         lng:0
       };
       deleteMarkers();
+
       if (place.geometry) {
 
-        console.log(place.geometry.location.lat(map));
-        console.log(place.geometry.location.lng(map));
         map.panTo(place.geometry.location);
         map.setZoom(15);
         markerPlace.lat = place.geometry.location.lat(map);
         markerPlace.lng = place.geometry.location.lng(map);
-
-        document.getElementById("red").addEventListener("click", onPlaceMarker);
-        document.getElementById("yellow").addEventListener("click", onPlaceMarker);
-        document.getElementById("green").addEventListener("click", onPlaceMarker);
-
-        function onPlaceMarker(){
-
-          flagColor = this.id; //en id está el color elegido
-
-          const flagSVG = {
-            path : "M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z",
-            fillColor: flagColor,
-            fillOpacity: 0.6,
-            scale: 3,
-            anchor: new google.maps.Point(8, 24)
-          }
-
-          const image = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
-          const image2 = "https://maps.google.com/mapfiles/kml/shapes/flag.png";
-
-          marker = new google.maps.Marker({
-                  position: markerPlace,
-                  map: map,
-                  label: {
-                    text: "Playa",
-                    color: flagColor,
-                    fontSize: '18px'
-                  },
-                  icon: flagSVG,
-                  title: 'Destination!'
-                });
-          markers.push(marker);
-
-          const thatBeach = {
-            name: place.name,
-            flag: flagColor
-          }
-
-          //send thatBeach to route mongoose, bbdd
-          $.ajax({
-            type: "POST",
-            url: '/new',
-            data: thatBeach,
-            success: function() {
-              console.log("enviado", this)
-            },
-          })
-
-        }
+        originalMarker(place.name,markerPlace);
         //search();
       } else {
         document.getElementById('autocomplete').placeholder = 'Enter a city';
       }
 
 
+      function originalMarker(placeName,markerPlace){
+        //send thatBeach to route mongoose, bbdd
+        const beachName ={
+          placeName:placeName
+        }
+        $.ajax({
+          type: "GET",
+          url: '/beach',
+          data: beachName,
+          success: function(data, status, headers, config) {
+            if (data != null && data !== '') {
+              let flagColor = data;
+              const flagSVG = {
+                path : "M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z",
+                fillColor: flagColor,
+                fillOpacity: 0.6,
+                scale: 3,
+                anchor: new google.maps.Point(8, 24)
+              }
+
+              marker = new google.maps.Marker({
+                      position: markerPlace,
+                      map: map,
+                      label: {
+                        text: "Playa",
+                        color: flagColor,
+                        fontSize: '18px'
+                      },
+                      icon: flagSVG,
+                      title: 'Destination!'
+                    });
+              markers.push(marker);
+            }
+          },
+          error: function(result,status,xhr) {
+            console.log("ERROR");
+            console.log(result)
+
+          }
+        })
+
+      }
+
+
+      document.getElementById("red").addEventListener("click", onPlaceMarker);
+      document.getElementById("yellow").addEventListener("click", onPlaceMarker);
+      document.getElementById("green").addEventListener("click", onPlaceMarker);
+
+
+      function onPlaceMarker(){
+
+        flagColor = this.id; //en id está el color elegido
+
+        const flagSVG = {
+          path : "M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z",
+          fillColor: flagColor,
+          fillOpacity: 0.6,
+          scale: 3,
+          anchor: new google.maps.Point(8, 24)
+        }
+
+        const image = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+        const image2 = "https://maps.google.com/mapfiles/kml/shapes/flag.png";
+
+        marker = new google.maps.Marker({
+                position: markerPlace,
+                map: map,
+                label: {
+                  text: "Playa",
+                  color: flagColor,
+                  fontSize: '18px'
+                },
+                icon: flagSVG,
+                title: 'Destination!'
+              });
+        markers.push(marker);
+
+        const thatBeach = {
+          name: place.name,
+          flag: flagColor
+        }
+
+        //send thatBeach to route mongoose, bbdd
+        $.ajax({
+          type: "POST",
+          url: '/new',
+          data: thatBeach,
+          success: function() {
+            console.log("enviado", this)
+          },
+        })
+
+      }
+
+
     }
+
+
 
 }
 
@@ -140,11 +189,6 @@ function onPlaceChanged() {
       content: document.getElementById('info-content')
     });
     */
-
-
-
-
-
 
 
 // When the user selects a city, get the place details for the city and

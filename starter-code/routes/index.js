@@ -22,7 +22,7 @@ router.post('/new', function (req, res, next) {
     }
     console.log(beach);
     if (beach.length === 0){
-      //debugger;
+
       newBeach.save(function (err, beach) {
         if (err) return next(err);
         console.log(beach);
@@ -33,8 +33,25 @@ router.post('/new', function (req, res, next) {
        console.log(beach);
        res.redirect('/')
     })
-    //debugger;
+
   })
 });
+
+router.get('/beach',function(req,res,next){
+   console.log("hi there!!");
+   const nameBeach = req.query.placeName;
+   Beachs.findOne({name:nameBeach},function(err,beach){
+     if (err) return next(err);
+     else if (beach === null){
+       console.log("no hay playa, vaya vaya!!")
+       res.send(null);
+     }
+     else {
+       console.log(beach);
+       return res.send(beach.flag); //no redirigimos directamente
+     }
+   })
+
+})
 
 module.exports = router;
