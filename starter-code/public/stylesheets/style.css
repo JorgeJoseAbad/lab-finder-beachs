@@ -13,6 +13,10 @@ a {
  width: 100%;
 }
 
+#autocomplete{
+  width: 500px;
+}
+
 #array-buttons{
   position: relative;
   float: right;

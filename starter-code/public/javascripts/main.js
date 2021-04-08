@@ -1,6 +1,4 @@
 
-
-
 function initMap(){
 
   var autocomplete;
@@ -55,8 +53,52 @@ function viewFlags(){
   document.getElementById('array-buttons').style.visibility = 'visible';
 }
 
-function onPlaceChanged() {
+function originalMarker(placeName,markerPlace){
+  //send thatBeach to route mongoose, bbdd
+  const beachName ={
+    placeName:placeName
+  }
 
+  //get inicial BBDD status of the required beach
+  $.ajax({
+    type: "GET",
+    url: '/beach',
+    data: beachName,
+    success: function(data, status, headers, config) {
+      if (data != null && data !== '') {
+        let flagColor = data;
+        const flagSVG = {
+          path : "M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z",
+          fillColor: flagColor,
+          fillOpacity: 0.6,
+          scale: 3,
+          anchor: new google.maps.Point(8, 24)
+        }
+
+        marker = new google.maps.Marker({
+                position: markerPlace,
+                map: map,
+                label: {
+                  text: "Finded!",
+                  color: flagColor,
+                  fontSize: '18px'
+                },
+                icon: flagSVG,
+                title: 'Destination!'
+              });
+        markers.push(marker);
+      }
+    },
+    error: function(result,status,xhr) {
+      console.log("ERROR");
+      console.log(result)
+
+    }
+  })
+
+}
+
+function onPlaceChanged() {
 
       viewFlags()
 
@@ -81,56 +123,6 @@ function onPlaceChanged() {
         document.getElementById('autocomplete').placeholder = 'Enter a city';
       }
 
-
-      function originalMarker(placeName,markerPlace){
-        //send thatBeach to route mongoose, bbdd
-        const beachName ={
-          placeName:placeName
-        }
-        $.ajax({
-          type: "GET",
-          url: '/beach',
-          data: beachName,
-          success: function(data, status, headers, config) {
-            if (data != null && data !== '') {
-              let flagColor = data;
-              const flagSVG = {
-                path : "M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z",
-                fillColor: flagColor,
-                fillOpacity: 0.6,
-                scale: 3,
-                anchor: new google.maps.Point(8, 24)
-              }
-
-              marker = new google.maps.Marker({
-                      position: markerPlace,
-                      map: map,
-                      label: {
-                        text: "Playa",
-                        color: flagColor,
-                        fontSize: '18px'
-                      },
-                      icon: flagSVG,
-                      title: 'Destination!'
-                    });
-              markers.push(marker);
-            }
-          },
-          error: function(result,status,xhr) {
-            console.log("ERROR");
-            console.log(result)
-
-          }
-        })
-
-      }
-
-
-      document.getElementById("red").addEventListener("click", onPlaceMarker);
-      document.getElementById("yellow").addEventListener("click", onPlaceMarker);
-      document.getElementById("green").addEventListener("click", onPlaceMarker);
-
-
       function onPlaceMarker(){
 
         flagColor = this.id; //en id está el color elegido
@@ -143,14 +135,14 @@ function onPlaceChanged() {
           anchor: new google.maps.Point(8, 24)
         }
 
-        const image = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
-        const image2 = "https://maps.google.com/mapfiles/kml/shapes/flag.png";
+        //const image = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+        //const image2 = "https://maps.google.com/mapfiles/kml/shapes/flag.png";
 
         marker = new google.maps.Marker({
                 position: markerPlace,
                 map: map,
                 label: {
-                  text: "Playa",
+                  text: "Finded!!",
                   color: flagColor,
                   fontSize: '18px'
                 },
@@ -164,7 +156,7 @@ function onPlaceChanged() {
           flag: flagColor
         }
 
-        //send thatBeach to route mongoose, bbdd
+        //send thatBeach to route, mongoose, bbdd
         $.ajax({
           type: "POST",
           url: '/new',
@@ -176,20 +168,10 @@ function onPlaceChanged() {
 
       }
 
+      document.getElementById("red").addEventListener("click", onPlaceMarker);
+      document.getElementById("yellow").addEventListener("click", onPlaceMarker);
+      document.getElementById("green").addEventListener("click", onPlaceMarker);
 
     }
 
-
-
 }
-
-
-
-  /*infoWindow = new google.maps.InfoWindow({
-      content: document.getElementById('info-content')
-    });
-    */
-
-
-// When the user selects a city, get the place details for the city and
-// zoom the map in on the city.
