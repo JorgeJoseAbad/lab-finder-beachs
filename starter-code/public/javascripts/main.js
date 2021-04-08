@@ -66,7 +66,7 @@ function originalMarker(placeName,markerPlace){
     success: function(data, status, headers, config) {
       if (data != null && data !== '') {
         const flagColor = data.flag;
-        const beachDate = data.date;
+        const beachDate = data.updated_at;
         const flagSVG = {
           path : "M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z",
           fillColor: flagColor,
@@ -79,7 +79,7 @@ function originalMarker(placeName,markerPlace){
                 position: markerPlace,
                 map: map,
                 label: {
-                  text: "Last visit: "+beachDate.toString(),
+                  text: "Last visit: "+ beachDate,
                   color: 'navy',
                   fontSize: '18px'
                 },
@@ -144,7 +144,7 @@ function onPlaceChanged() {
                 position: markerPlace,
                 map: map,
                 label: {
-                  text: "Modified now "+new Date(),
+                  text: "Modified now: "+new Date(),
                   color: flagColor,
                   fontSize: '18px'
                 },
